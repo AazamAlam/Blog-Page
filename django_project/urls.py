@@ -16,6 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import path, include
 from users import views as user_views
 #always use folder_views so the names do not collide
@@ -29,3 +31,7 @@ urlpatterns = [
     path('profile/', user_views.profile, name='profile')
 ]
 #known as class-based view, does not handle the templates
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    #from django documentation, adds url for the media links
