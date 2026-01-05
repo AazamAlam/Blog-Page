@@ -1,0 +1,19 @@
+{% extends 'blog/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class = "content-section">
+        <form method = "POST" >
+            {% csrf_token %}
+            <fieldset class = "form-group">
+                <legend class = "border_bottom mb-4"> Blog Post </legend>
+                {{ form|crispy }}
+            </fieldset>
+            <div class = "form-group"> 
+                <button class="btn btn-outline-info" type = "submit">Post</button>
+            </div>
+        </form>
+    </div>
+{% endblock content %}
+
+<!-- .as_p splits up the form content into paragraphs-->
+<!-- crispy with |crispy tag is good for initial styling, adds style for free with bootstrap classes-->

@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 # Create your models here.
 class Post(models.Model):
@@ -11,6 +12,11 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+    
+    def get_absolute_url(self):
+        return reverse('post-detail', kwargs={'pk: self.pk'})
+    #this tells where to find the url after the form is submitted, accessing the specific post details (get absolute url)
+    #reverse is better than the redirect, as it gives a url string, which the view handles for the redirection
 
 #other arguments possible such as auto_now or auto_now_add but with caveats (can't change/auto update)
 #timzone.now() is a function, but we do not want to execute it right away
