@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
 #from django.contrib.auth.forms import UserCreationForm form was inherited and a field was added
 from django.contrib import messages
-from .forms import UserRegisterForm
+from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 from django.contrib.auth.decorators import login_required
+
 
 # Create your views here.
 def register(request):
@@ -20,7 +21,24 @@ def register(request):
 
 @login_required
 def profile(request):
-    return render(request, 'users/profile.html')
+    if request.method == 'POST':
+        u_form = UserUpdateForm(request.POST, instance=request.user)
+        p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile) #each form will be populated with current data
+        if u_form.is_valid() and p_form.is_valid():
+            u_form.save()
+            p_form.save()
+            messages.success(request, f'your account has been updated')
+            return redirect('profile') #key so it doesn't fall through again to a render and asks to refill form
+    else: 
+        u_form = UserUpdateForm(instance=request.user)
+        p_form = ProfileUpdateForm(instance=request.user.profile) #each form will be populated with current data
+    
+    context = {
+        'u_form': u_form,
+        'p_form': p_form
+    }
+
+    return render(request, 'users/profile.html', context)
 
 #decorator adds functionality to an existing function
 

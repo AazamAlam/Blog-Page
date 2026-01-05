@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .models import Post
+from django.views.generic import ListView
 '''
 posts = [
     {
@@ -28,6 +29,11 @@ def home(request):
 #render is a shortcut that takes in the request and path as parameters
 #3rd argument is context, fo passing mroe information
 #view is still returning an http response (or exception)
+
+class PostListView(ListView):
+    model = Post #tells which model to query
+
+
 
 def about(request):
     return render(request, 'blog/about.html', {'title': 'About'})
