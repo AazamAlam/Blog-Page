@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import Post
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.models import User
 '''
 posts = [
     {
@@ -36,8 +37,22 @@ class PostListView(ListView):
     template_name = 'blog/home.html' #instead of <app>/<model>_<viewtype> (blog/post_list.html)
     context_object_name = 'posts' #changes the name of the variable so it matches the template, default is object list
     ordering = ['-date_posted'] #- reverses ordering
+    paginate_by = 5 #pagination functionality
 
 #doesn't save lines, but avoid rendering functions, and sets variables only
+
+class UserPostListView(ListView):
+    model = Post #tells which model to query
+    template_name = 'blog/user_posts.html' #instead of <app>/<model>_<viewtype> (blog/post_list.html)
+    context_object_name = 'posts' #changes the name of the variable so it matches the template, default is object list
+    #ordering = ['-date_posted'] #- reverses ordering
+    #ordering gets overwritten by get_query_set
+    paginate_by = 2 #pagination functionality
+
+    def get_queryset(self):
+        user = get_object_or_404(User, username=self.kwargs.get('username')) #returns a 404 if the user does not exist
+        return Post.objects.filter(author=user).order_by('-date_posted')
+
 
 class PostDetailView(DetailView):
     model = Post
@@ -76,8 +91,6 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         if self.request.user == post.author:
             return True
         return False
-    
-
 
 def about(request):
     return render(request, 'blog/about.html', {'title': 'About'})
