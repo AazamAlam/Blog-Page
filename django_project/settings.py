@@ -137,3 +137,13 @@ LOGIN_URL = 'login'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media') #create a profile pics directory in the media directory located in the base directory, standarized for all os systems
 MEDIA_URL = '/media/' #how to access from browser
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ.get('EMAIL_USER') #gmail of the email being used to send
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS')
+
+#configuration for setting up the gmail
